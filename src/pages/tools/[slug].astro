@@ -21,7 +21,6 @@ export function getStaticPaths() {
 interface Props { tool: Tool }
 const { tool } = Astro.props;
 const isLive = tool.url !== null;
-const envVarName = `PUBLIC_TOOL_${tool.slug.toUpperCase().replace(/-/g, '_')}_URL`;
 ---
 
 {isLive && (
@@ -75,10 +74,12 @@ const envVarName = `PUBLIC_TOOL_${tool.slug.toUpperCase().replace(/-/g, '_')}_UR
         <!-- Info panel -->
         <div style="background-color: #1E293B; border: 1px dashed #334155; border-radius: 0.75rem; padding: 1.5rem; margin: 1.5rem 0 2rem; text-align: left;">
           <p style="color: #94A3B8; font-size: 0.9rem; margin: 0 0 0.875rem; line-height: 1.6;">
-            This tool hasn't been deployed to a subdomain yet. To enable it, add the following environment variable to your <code style="color: #818CF8; font-size: 0.85em;">.env</code> file:
+            This tool hasn't been deployed to a subdomain yet. To enable it, open
+            <code style="color: #818CF8; font-size: 0.85em;">src/config/tools.ts</code>
+            and set its <code style="color: #818CF8; font-size: 0.85em;">url</code> field:
           </p>
           <code style="display: block; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.15); color: #818CF8; padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.82rem; font-family: ui-monospace, 'Cascadia Code', monospace; word-break: break-all; line-height: 1.6;">
-            {envVarName}=https://your-subdomain.yourdomain.com
+            {'{'} slug: '{tool.slug}', url: 'https://your-subdomain.run-the-math.dev' {'}'}
           </code>
         </div>
 

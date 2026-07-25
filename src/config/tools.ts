@@ -1,12 +1,18 @@
 // ============================================================
 // src/config/tools.ts
-// Central tool registry — reads PUBLIC_TOOL_*_URL env vars.
-// A tool with url: null is NOT deployed yet → shows 404 on
-// /tools/[slug] and a "Coming Soon" state on the homepage.
+// Central tool registry — edit this file to add, remove, or
+// enable/disable tools.
+//
+// Setting url: null marks the tool as "not yet deployed":
+//   • Homepage card  → dimmed "Coming Soon" state
+//   • /tools/<slug>  → branded 404-style "not deployed" page
+//
+// Setting url: 'https://...' makes the tool live:
+//   • Homepage card  → active "Open Tool" CTA
+//   • /tools/<slug>  → redirects to that subdomain URL
 // ============================================================
 
 export interface Tool {
-  /** URL-safe identifier — must match the env var suffix */
   slug: string;
   icon: string;
   title: string;
@@ -14,26 +20,22 @@ export interface Tool {
   category: string;
   categoryColor: string;
   keywords: string[];
-  /**
-   * Resolved at build-time from import.meta.env.
-   * null = env var not set → tool not deployed yet.
-   */
+  /** Subdomain URL. null = not yet deployed. */
   url: string | null;
 }
 
-/**
- * Resolve a subdomain URL from the env.
- * Variable convention: PUBLIC_TOOL_<SLUG_UPPER>_URL
- * e.g. slug "freelance-rate-calculator"
- *      → env key PUBLIC_TOOL_FREELANCE_RATE_CALCULATOR_URL
- */
-function resolveUrl(slug: string): string | null {
-  const key = `PUBLIC_TOOL_${slug.toUpperCase().replace(/-/g, '_')}_URL`;
-  const value = import.meta.env[key];
-  return typeof value === 'string' && value.trim() !== '' ? value.trim() : null;
-}
-
 export const TOOLS: Tool[] = [
+  {
+    slug: 'coffee-brew-ratio',
+    icon: '☕',
+    title: 'Specialty Coffee Brew Ratio & Extraction Tool',
+    description:
+      'Dial in your perfect cup — calculate brew ratios, water temperature, and extraction yield for any brew method.',
+    category: 'Coffee',
+    categoryColor: '#F59E0B',
+    keywords: ['coffee', 'brew', 'ratio', 'extraction', 'espresso', 'pour over', 'specialty'],
+    url: 'https://coffee-calculator.runthemath.app',
+  },
   {
     slug: 'freelance-rate-calculator',
     icon: '💼',
@@ -43,7 +45,7 @@ export const TOOLS: Tool[] = [
     category: 'Finance',
     categoryColor: '#0EA5E9',
     keywords: ['freelance', 'rate', 'invoice', 'change order', 'finance', 'hourly'],
-    url: resolveUrl('freelance-rate-calculator'),
+    url: null,
   },
   {
     slug: 'filament-cost-estimator',
@@ -54,18 +56,7 @@ export const TOOLS: Tool[] = [
     category: '3D Printing',
     categoryColor: '#10B981',
     keywords: ['3d printing', 'filament', 'fdm', 'pla', 'abs', 'cost', 'power'],
-    url: resolveUrl('filament-cost-estimator'),
-  },
-  {
-    slug: 'coffee-brew-ratio',
-    icon: '☕',
-    title: 'Specialty Coffee Brew Ratio & Extraction Tool',
-    description:
-      'Dial in your perfect cup — calculate brew ratios, water temperature, and extraction yield for any brew method.',
-    category: 'Coffee',
-    categoryColor: '#F59E0B',
-    keywords: ['coffee', 'brew', 'ratio', 'extraction', 'espresso', 'pour over', 'specialty'],
-    url: resolveUrl('coffee-brew-ratio'),
+    url: null, // not yet deployed
   },
   {
     slug: 'saas-churn-ltv',
@@ -76,7 +67,7 @@ export const TOOLS: Tool[] = [
     category: 'SaaS',
     categoryColor: '#EC4899',
     keywords: ['saas', 'churn', 'ltv', 'lifetime value', 'retention', 'mrr', 'arr', 'revenue'],
-    url: resolveUrl('saas-churn-ltv'),
+    url: null,
   },
   {
     slug: 'electricity-cost',
@@ -87,7 +78,7 @@ export const TOOLS: Tool[] = [
     category: 'Finance',
     categoryColor: '#0EA5E9',
     keywords: ['electricity', 'power', 'kwh', 'energy', 'utility', 'cost', 'watt'],
-    url: resolveUrl('electricity-cost'),
+    url: null, // not yet deployed
   },
   {
     slug: 'sprint-planner',
@@ -98,11 +89,11 @@ export const TOOLS: Tool[] = [
     category: 'Productivity',
     categoryColor: '#6366F1',
     keywords: ['project', 'deadline', 'sprint', 'agile', 'timeline', 'planning', 'scrum'],
-    url: resolveUrl('sprint-planner'),
+    url: null, // not yet deployed
   },
 ];
 
-/** Lookup a single tool by slug. Returns undefined if not in registry. */
+/** Look up a single tool by its slug. Returns undefined for unknown slugs. */
 export function getToolBySlug(slug: string): Tool | undefined {
   return TOOLS.find((t) => t.slug === slug);
 }
