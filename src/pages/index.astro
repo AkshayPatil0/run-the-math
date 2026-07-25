@@ -1,0 +1,373 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ToolCard from "../components/ToolCard.astro";
+import { TOOLS } from "../config/tools";
+
+const liveCount = TOOLS.filter((t) => t.url !== null).length;
+
+const features = [
+  {
+    icon: "🔒",
+    title: "100% Free, Forever",
+    description:
+      "No subscriptions, no paywalls. Every tool on Run The Math is and will always be free to use.",
+  },
+  {
+    icon: "👤",
+    title: "Zero Sign-up Required",
+    description:
+      "No accounts, no email collection. Open a tool and start working immediately.",
+  },
+  {
+    icon: "🛡️",
+    title: "Privacy-First & Client-Side",
+    description:
+      "All calculations run in your browser. Your data never touches our servers — guaranteed.",
+  },
+];
+
+// Serialise just what the client-side search script needs (no env URL, keep it clean)
+const toolsForSearch = TOOLS.map(({ slug, title, category, keywords }) => ({
+  slug,
+  title,
+  category,
+  keywords,
+}));
+---
+
+<Layout
+  title="Run The Math — Precision Micro-Tools for Digital Creators & Pros"
+  description="Fast, privacy-friendly, zero-fluff calculators and generators to solve everyday workflow decisions. 100% free, zero sign-up."
+>
+  <!-- ===== HERO ===== -->
+  <section
+    aria-label="Hero"
+    style="padding: 5rem 1.5rem 3rem; text-align: center; position: relative; overflow: hidden;"
+  >
+    <div
+      aria-hidden="true"
+      style="position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(ellipse at center, rgba(99,102,241,0.12) 0%, transparent 70%); pointer-events: none;"
+    >
+    </div>
+
+    <div style="max-width: 760px; margin: 0 auto; position: relative;">
+      <!-- Eyebrow badge -->
+      <div
+        style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); border-radius: 9999px; padding: 0.3rem 0.9rem; margin-bottom: 1.5rem;"
+      >
+        <span
+          style="width: 6px; height: 6px; border-radius: 50%; background: #6366F1; animation: pulse 2s infinite;"
+        ></span>
+        <span
+          style="font-size: 0.8rem; font-weight: 600; color: #818CF8; letter-spacing: 0.04em;"
+        >
+          {liveCount} Live · {TOOLS.length - liveCount} Coming Soon
+        </span>
+      </div>
+
+      <h1
+        style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: #F8FAFC; margin: 0 0 1.25rem;"
+      >
+        Precision Micro-Tools<br />
+        <span
+          style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A78BFA 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"
+        >
+          for Digital Creators &amp; Pros
+        </span>
+      </h1>
+
+      <p
+        style="font-size: 1.15rem; color: #94A3B8; line-height: 1.7; margin: 0 0 2.5rem; max-width: 560px; margin-left: auto; margin-right: auto;"
+      >
+        Fast, privacy-friendly, zero-fluff calculators and generators to solve
+        everyday workflow decisions.
+      </p>
+
+      <!-- Hero Search -->
+      <div style="max-width: 520px; margin: 0 auto; position: relative;">
+        <svg
+          style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748B; pointer-events: none;"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"
+          ></path>
+        </svg>
+        <input
+          id="hero-search"
+          type="search"
+          placeholder="Search tools by name or category…"
+          class="search-input"
+          aria-label="Search tools by name or category"
+          autocomplete="off"
+          style="font-size: 1rem; padding: 0.875rem 1rem 0.875rem 3rem;"
+        />
+      </div>
+
+      <!-- Category filter pills -->
+      <div
+        id="category-filters"
+        style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1.25rem;"
+        role="group"
+        aria-label="Filter by category"
+      >
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="finance">Finance</button>
+        <button class="filter-btn" data-filter="3d printing">3D Printing</button
+        >
+        <button class="filter-btn" data-filter="coffee">Coffee</button>
+        <button class="filter-btn" data-filter="saas">SaaS</button>
+        <button class="filter-btn" data-filter="productivity"
+          >Productivity</button
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TOOLS GRID ===== -->
+  <section
+    id="tools"
+    aria-labelledby="tools-heading"
+    style="padding: 1rem 1.5rem 5rem;"
+  >
+    <div style="max-width: 1280px; margin: 0 auto;">
+      <div
+        style="margin-bottom: 2.5rem; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;"
+      >
+        <div>
+          <h2
+            id="tools-heading"
+            style="font-size: 1.6rem; font-weight: 700; color: #F8FAFC; margin: 0 0 0.4rem; letter-spacing: -0.02em;"
+          >
+            All Tools
+          </h2>
+          <p style="color: #64748B; font-size: 0.9rem; margin: 0;">
+            Showing <span id="tools-count">{TOOLS.length}</span> tools &nbsp;·&nbsp;
+            <span style="color: #10B981;">{liveCount} live</span>
+            &nbsp;·&nbsp;
+            <span style="color: #475569;"
+              >{TOOLS.length - liveCount} coming soon</span
+            >
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="tools-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem;"
+        aria-label="Tool cards"
+      >
+        {
+          TOOLS.map((tool, i) => (
+            <ToolCard
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+              category={tool.category}
+              categoryColor={tool.categoryColor}
+              url={tool.url}
+              href={`/tools/${tool.slug}`}
+              index={i}
+            />
+          ))
+        }
+      </div>
+
+      <div
+        id="no-results"
+        style="display: none; text-align: center; padding: 4rem 1rem;"
+      >
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+        <h3 style="color: #94A3B8; font-size: 1.1rem; margin: 0 0 0.5rem;">
+          No tools found
+        </h3>
+        <p style="color: #475569; font-size: 0.9rem; margin: 0;">
+          Try a different keyword or category filter.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VALUE PROPOSITION ===== -->
+  <section
+    aria-labelledby="why-heading"
+    style="padding: 4rem 1.5rem; background-color: #0A1120; border-top: 1px solid #1E293B; border-bottom: 1px solid #1E293B;"
+  >
+    <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+      <h2
+        id="why-heading"
+        style="font-size: 1.6rem; font-weight: 700; color: #F8FAFC; margin: 0 0 0.5rem; letter-spacing: -0.02em;"
+      >
+        Why Use Run The Math?
+      </h2>
+      <p style="color: #64748B; margin: 0 0 3rem; font-size: 0.95rem;">
+        Built for speed, privacy, and zero friction.
+      </p>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;"
+      >
+        {
+          features.map((f) => (
+            <div class="feature-card">
+              <div style="font-size: 2rem; margin-bottom: 0.75rem;">
+                {f.icon}
+              </div>
+              <h3 style="font-size: 1rem; font-weight: 700; color: #F8FAFC; margin: 0 0 0.5rem;">
+                {f.title}
+              </h3>
+              <p style="font-size: 0.875rem; color: #64748B; margin: 0; line-height: 1.6;">
+                {f.description}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA STRIP ===== -->
+  <section
+    aria-label="Call to action"
+    style="padding: 5rem 1.5rem; text-align: center;"
+  >
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h2
+        style="font-size: 1.75rem; font-weight: 800; color: #F8FAFC; margin: 0 0 1rem; letter-spacing: -0.02em;"
+      >
+        Ready to get started?
+      </h2>
+      <p style="color: #64748B; margin: 0 0 2rem; font-size: 1rem;">
+        Pick a tool above and get your answer in seconds. No fluff, no fuss.
+      </p>
+      <a
+        href="#tools"
+        class="btn-primary"
+        style="padding: 0.75rem 1.75rem; font-size: 1rem;"
+      >
+        Browse All Tools
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14M12 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<script define:vars={{ toolsForSearch }}>
+  const heroSearch = document.getElementById("hero-search");
+  const headerSearch = document.getElementById("header-search");
+  const grid = document.getElementById("tools-grid");
+  const noResults = document.getElementById("no-results");
+  const toolsCount = document.getElementById("tools-count");
+  const filterBtns = document.querySelectorAll(".filter-btn");
+
+  let currentQuery = "";
+  let currentCategory = "all";
+
+  function filterTools() {
+    const cards = grid.querySelectorAll(".tool-card");
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const cardTitle = (card.dataset.title || "").toLowerCase();
+      const cardCat = (card.dataset.category || "").toLowerCase();
+      const toolData = toolsForSearch.find(
+        (t) => t.title.toLowerCase() === cardTitle,
+      );
+      const keywords = toolData ? toolData.keywords.join(" ") : "";
+
+      const matchesQuery =
+        currentQuery === "" ||
+        cardTitle.includes(currentQuery) ||
+        cardCat.includes(currentQuery) ||
+        keywords.includes(currentQuery);
+
+      const matchesCat =
+        currentCategory === "all" || cardCat === currentCategory;
+
+      if (matchesQuery && matchesCat) {
+        card.style.display = "";
+        visible++;
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    noResults.style.display = visible === 0 ? "block" : "none";
+    if (toolsCount) toolsCount.textContent = String(visible);
+  }
+
+  function handleSearch(e) {
+    currentQuery = e.target.value.trim().toLowerCase();
+    if (e.target.id === "hero-search" && headerSearch)
+      headerSearch.value = e.target.value;
+    else if (e.target.id === "header-search" && heroSearch)
+      heroSearch.value = e.target.value;
+    filterTools();
+  }
+
+  if (heroSearch) heroSearch.addEventListener("input", handleSearch);
+  if (headerSearch) headerSearch.addEventListener("input", handleSearch);
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      currentCategory = btn.dataset.filter || "all";
+      filterBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      filterTools();
+    });
+  });
+</script>
+
+<style>
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.35rem 0.9rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .filter-btn:hover {
+    border-color: #6366f1;
+    color: #818cf8;
+  }
+
+  .filter-btn.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: #818cf8;
+  }
+</style>

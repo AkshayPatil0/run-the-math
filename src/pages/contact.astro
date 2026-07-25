@@ -1,0 +1,220 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="Contact Us"
+  description="Get in touch with the Run The Math team. We'd love to hear your tool suggestions, feedback, or questions."
+>
+  <div style="max-width: 700px; margin: 0 auto; padding: 4rem 1.5rem 6rem;">
+    <div
+      style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid #1E293B;"
+    >
+      <span
+        style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6366F1;"
+        >Get in Touch</span
+      >
+      <h1
+        style="font-size: 2.25rem; font-weight: 800; color: #F8FAFC; margin: 0.5rem 0 0.75rem; letter-spacing: -0.02em;"
+      >
+        Contact Us
+      </h1>
+      <p style="color: #64748B; font-size: 1rem; margin: 0;">
+        Have a tool suggestion, found a bug, or just want to say hi? We'd love
+        to hear from you.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+      <!-- Contact Form -->
+      <div class="feature-card">
+        <h2
+          style="font-size: 1.1rem; font-weight: 700; color: #F8FAFC; margin: 0 0 1.5rem; letter-spacing: -0.01em;"
+        >
+          Send a Message
+        </h2>
+
+        <form
+          id="contact-form"
+          novalidate
+          style="display: flex; flex-direction: column; gap: 1.25rem;"
+        >
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"
+            class="name-email-grid"
+          >
+            <div>
+              <label
+                for="contact-name"
+                style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
+              >
+                Name <span style="color: #6366F1;">*</span>
+              </label>
+              <input
+                type="text"
+                id="contact-name"
+                name="name"
+                required
+                placeholder="Your name"
+                style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit;"
+                onfocus="this.style.borderColor='#6366F1'"
+                onblur="this.style.borderColor='#334155'"
+              />
+            </div>
+            <div>
+              <label
+                for="contact-email"
+                style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
+              >
+                Email <span style="color: #6366F1;">*</span>
+              </label>
+              <input
+                type="email"
+                id="contact-email"
+                name="email"
+                required
+                placeholder="you@example.com"
+                style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit;"
+                onfocus="this.style.borderColor='#6366F1'"
+                onblur="this.style.borderColor='#334155'"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              for="contact-subject"
+              style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
+            >
+              Subject
+            </label>
+            <select
+              id="contact-subject"
+              name="subject"
+              style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit; cursor: pointer;"
+              onfocus="this.style.borderColor='#6366F1'"
+              onblur="this.style.borderColor='#334155'"
+            >
+              <option value="general">General Question</option>
+              <option value="bug">Bug Report</option>
+              <option value="feature">Tool Suggestion</option>
+              <option value="business">Business Inquiry</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              for="contact-message"
+              style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
+            >
+              Message <span style="color: #6366F1;">*</span>
+            </label>
+            <textarea
+              id="contact-message"
+              name="message"
+              required
+              rows="5"
+              placeholder="Tell us what's on your mind…"
+              style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit; resize: vertical; line-height: 1.6;"
+              onfocus="this.style.borderColor='#6366F1'"
+              onblur="this.style.borderColor='#334155'"></textarea>
+          </div>
+
+          <div
+            style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;"
+          >
+            <p style="font-size: 0.8rem; color: #475569; margin: 0;">
+              We typically respond within 24–48 hours.
+            </p>
+            <button
+              type="submit"
+              class="btn-primary"
+              id="submit-btn"
+              style="padding: 0.65rem 1.5rem;"
+            >
+              Send Message
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="22" y1="2" x2="11" y2="13"></line><polygon
+                  points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Success/Error State -->
+          <div
+            id="form-status"
+            style="display: none; padding: 0.875rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500;"
+          >
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+  const statusEl = document.getElementById("form-status");
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = (
+      document.getElementById("contact-name") as HTMLInputElement
+    )?.value.trim();
+    const email = (
+      document.getElementById("contact-email") as HTMLInputElement
+    )?.value.trim();
+    const message = (
+      document.getElementById("contact-message") as HTMLTextAreaElement
+    )?.value.trim();
+
+    if (!name || !email || !message) {
+      if (statusEl) {
+        statusEl.style.display = "block";
+        statusEl.style.backgroundColor = "rgba(239,68,68,0.1)";
+        statusEl.style.border = "1px solid rgba(239,68,68,0.3)";
+        statusEl.style.color = "#FCA5A5";
+        statusEl.textContent = "Please fill in all required fields.";
+      }
+      return;
+    }
+
+    // Simulate submission (replace with actual endpoint)
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending…";
+
+    setTimeout(() => {
+      if (statusEl) {
+        statusEl.style.display = "block";
+        statusEl.style.backgroundColor = "rgba(16,185,129,0.1)";
+        statusEl.style.border = "1px solid rgba(16,185,129,0.3)";
+        statusEl.style.color = "#6EE7B7";
+        statusEl.textContent =
+          "✓ Message sent! We'll get back to you within 24–48 hours.";
+      }
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerHTML =
+        'Send Message <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+    }, 1200);
+  });
+</script>
+
+<style>
+  @media (max-width: 480px) {
+    .name-email-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

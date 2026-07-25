@@ -1,0 +1,168 @@
+---
+export interface Props {
+  /** Size variant ('sm', 'md', 'lg') or numeric px size for the icon container. Default is 'md'. */
+  size?: 'sm' | 'md' | 'lg' | number;
+  /** Whether to display the text name alongside the logo icon. Default is true. */
+  showName?: boolean;
+  /** Optional link target URL. Default is '/' */
+  href?: string;
+  /** Force wrapping in an <a> tag or not. Defaults to true if href is provided. */
+  isLink?: boolean;
+  /** Custom font size for the brand name text. Overrides size preset if provided. */
+  nameSize?: string;
+  /** Additional CSS class names */
+  class?: string;
+  /** Additional inline styles for the outer container */
+  style?: string;
+  /** Custom aria-label for accessibility when rendered as a link */
+  ariaLabel?: string;
+}
+
+const {
+  size = 'md',
+  showName = true,
+  href = '/',
+  isLink = true,
+  nameSize,
+  class: className = '',
+  style = '',
+  ariaLabel = 'Run The Math Home',
+} = Astro.props;
+
+// Determine icon dimension and text font size based on size prop
+let iconSize = 32;
+let defaultTextSize = '1.125rem';
+let borderRadius = 8;
+
+if (typeof size === 'number') {
+  iconSize = size;
+  borderRadius = Math.max(4, Math.round(size * 0.25));
+  defaultTextSize = `${Math.max(0.85, (size / 32) * 1.125).toFixed(3)}rem`;
+} else if (size === 'sm') {
+  iconSize = 28;
+  borderRadius = 7;
+  defaultTextSize = '1rem';
+} else if (size === 'lg') {
+  iconSize = 44;
+  borderRadius = 11;
+  defaultTextSize = '1.5rem';
+} else {
+  // 'md'
+  iconSize = 32;
+  borderRadius = 8;
+  defaultTextSize = '1.125rem';
+}
+
+const fontSize = nameSize || defaultTextSize;
+
+// Generate unique IDs for SVG defs to avoid ID collisions when multiple logos exist on a page
+const id = Math.random().toString(36).substring(2, 8);
+const bgGradId = `logo-bg-${id}`;
+const brandGradId = `logo-brand-${id}`;
+const glowId = `logo-glow-${id}`;
+
+const Element = (isLink && href) ? 'a' : 'div';
+const linkProps = (isLink && href) ? { href, 'aria-label': ariaLabel } : {};
+---
+
+<Element
+  {...linkProps}
+  class={`logo-component ${className}`}
+  style={`text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; flex-shrink: 0; ${style}`}
+>
+  <!-- Logo Icon Container -->
+  <div
+    style={`width: ${iconSize}px; height: ${iconSize}px; border-radius: ${borderRadius}px; background: linear-gradient(135deg, #6366F1, #8B5CF6); display: flex; align-items: center; justify-content: center; flex-shrink: 0;`}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 64 64"
+      width="100%"
+      height="100%"
+      aria-hidden="true"
+    >
+      <defs>
+        <!-- Background Gradient -->
+        <linearGradient id={bgGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0F172A"></stop>
+          <stop offset="100%" stop-color="#1E293B"></stop>
+        </linearGradient>
+
+        <!-- Main Icon Gradient (Cyan to Indigo) -->
+        <linearGradient id={brandGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#38BDF8"></stop>
+          <stop offset="50%" stop-color="#6366F1"></stop>
+          <stop offset="100%" stop-color="#8B5CF6"></stop>
+        </linearGradient>
+
+        <!-- Accent Glow -->
+        <filter id={glowId} x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="1.5" result="blur"></feGaussianBlur>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"></feComposite>
+        </filter>
+      </defs>
+
+      <!-- Background Box -->
+      <rect width="64" height="64" rx="16" fill={`url(#${bgGradId})`}></rect>
+      <rect
+        width="62"
+        height="62"
+        x="1"
+        y="1"
+        rx="15"
+        fill="none"
+        stroke="#334155"
+        stroke-width="1.5"
+        opacity="0.6"
+      ></rect>
+
+      <!-- Math & Motion Graphic: Dynamic Square Root Chevron -->
+      <g filter={`url(#${glowId})`}>
+        <!-- Main Radical/Speed Line -->
+        <path
+          d="M 13 35 L 20 35 L 27 47 L 41 20 L 51 20"
+          fill="none"
+          stroke={`url(#${brandGradId})`}
+          stroke-width="5.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+
+        <!-- Math Accents -->
+        <!-- Plus Operator (Top Right) -->
+        <path
+          d="M 44 29 H 50 M 47 26 V 32"
+          stroke="#38BDF8"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        ></path>
+
+        <!-- Multiply / X (Bottom Left) -->
+        <path
+          d="M 15 44 L 21 50 M 21 44 L 15 50"
+          stroke="#8B5CF6"
+          stroke-width="2.2"
+          stroke-linecap="round"
+        ></path>
+
+        <!-- Equals Sign / Motion Trails (Bottom Right) -->
+        <path
+          d="M 37 44 H 49 M 37 49 H 49"
+          stroke="#F43F5E"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        ></path>
+      </g>
+    </svg>
+  </div>
+
+  {showName && (
+    <span
+      style={`font-size: ${fontSize}; font-weight: 700; color: #F8FAFC; letter-spacing: -0.02em; line-height: 1;`}
+    >
+      Run The <span
+        style="background: linear-gradient(135deg, #6366F1, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"
+      >Math</span>
+    </span>
+  )}
+</Element>

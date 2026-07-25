@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Logo from '../components/Logo.astro';
+---
+
+<Layout
+  title="About Run The Math"
+  description="Run The Math is a free suite of precision micro-tools for digital creators and professionals. No sign-up, no fluff."
+>
+  <div style="max-width: 800px; margin: 0 auto; padding: 4rem 1.5rem 6rem;">
+    <div style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid #1E293B;">
+      <div style="margin-bottom: 1rem;">
+        <Logo size="lg" isLink={false} />
+      </div>
+      <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6366F1;">Our Story</span>
+      <h1 style="font-size: 2.25rem; font-weight: 800; color: #F8FAFC; margin: 0.5rem 0 0.75rem; letter-spacing: -0.02em;">About Run The Math</h1>
+      <p style="color: #64748B; font-size: 1rem; margin: 0; line-height: 1.7;">
+        Built by makers, for makers. Run The Math exists because every professional deserves fast, honest tools without the signup wall.
+      </p>
+    </div>
+
+    <div style="color: #94A3B8; line-height: 1.8; font-size: 0.95rem;">
+      <p style="margin-bottom: 1.5rem;">
+        Run The Math started with a simple frustration: having to sign up for yet another service just to run a quick calculation. Whether it was figuring out a freelance rate, estimating 3D print costs, or dialing in a coffee recipe — the tools that existed were bloated, ad-heavy, or required an account.
+      </p>
+      <p style="margin-bottom: 2rem;">
+        So we built something different. Every tool on Run The Math is fast, focused, and runs entirely in your browser. No servers process your inputs. No database stores your results. Just you and the math.
+      </p>
+
+      <h2 style="font-size: 1.25rem; font-weight: 700; color: #F8FAFC; margin: 2.5rem 0 1.5rem; letter-spacing: -0.01em;">Our Principles</h2>
+      <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
+        {[
+          { icon: '⚡', title: 'Speed First', desc: 'Static HTML, zero runtime overhead. Tools load in milliseconds.' },
+          { icon: '🔒', title: 'Privacy by Design', desc: 'Client-side math only. Your numbers never leave your device.' },
+          { icon: '🎯', title: 'One Tool, One Job', desc: 'Every calculator does exactly one thing, and does it well.' },
+          { icon: '🆓', title: 'Free Forever', desc: 'We are ad-supported. Tools will never go behind a paywall.' },
+        ].map(p => (
+          <div style="display: flex; gap: 1rem; align-items: flex-start; padding: 1.25rem; background-color: #1E293B; border: 1px solid #334155; border-radius: 0.75rem;">
+            <div style="font-size: 1.5rem; flex-shrink: 0; margin-top: 2px;">{p.icon}</div>
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: #F8FAFC; margin: 0 0 0.25rem;">{p.title}</h3>
+              <p style="font-size: 0.875rem; color: #64748B; margin: 0; line-height: 1.5;">{p.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style="background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.08)); border: 1px solid rgba(99,102,241,0.2); border-radius: 0.75rem; padding: 2rem; text-align: center; margin-top: 3rem;">
+        <h2 style="font-size: 1.1rem; font-weight: 700; color: #F8FAFC; margin: 0 0 0.75rem;">Have an idea for a tool?</h2>
+        <p style="color: #64748B; font-size: 0.9rem; margin: 0 0 1.5rem;">We actively build tools based on community requests. Send us your idea!</p>
+        <a href="/contact" class="btn-primary">
+          Suggest a Tool
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

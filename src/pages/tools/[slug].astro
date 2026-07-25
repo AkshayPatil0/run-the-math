@@ -1,0 +1,101 @@
+---
+// src/pages/tools/[slug].astro
+//
+// Statically pre-renders a page for every registered tool slug.
+//
+// Behaviour (determined by env vars at build time):
+//   A. Slug not in registry    → page is never generated → site's global 404 kicks in
+//   B. Tool URL set (env var)  → lightweight redirect page (meta-refresh + JS)
+//   C. Tool URL null (no env)  → branded "not deployed yet" / 404-style page
+
+import { TOOLS, type Tool } from '../../config/tools';
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  return TOOLS.map((tool) => ({
+    params: { slug: tool.slug },
+    props: { tool },
+  }));
+}
+
+interface Props { tool: Tool }
+const { tool } = Astro.props;
+const isLive = tool.url !== null;
+const envVarName = `PUBLIC_TOOL_${tool.slug.toUpperCase().replace(/-/g, '_')}_URL`;
+---
+
+{isLive && (
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Redirecting to {tool.title}…</title>
+      <meta http-equiv="refresh" content={`0; url=${tool.url}`} />
+      <link rel="canonical" href={tool.url!} />
+      <script define:vars={{ targetUrl: tool.url }}>
+        window.location.replace(targetUrl);
+      </script>
+      <style>
+        {`body{background:#0F172A;color:#94A3B8;font-family:ui-sans-serif,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;}`}
+      </style>
+    </head>
+    <body>
+      <p>Redirecting you to <a href={tool.url!} style="color:#6366F1;">{tool.title}</a>…</p>
+    </body>
+  </html>
+)}
+
+{!isLive && (
+  <Layout
+    title={`${tool.title} — Not Yet Available`}
+    description={`${tool.title} hasn't been deployed yet. Check back soon or browse other tools.`}
+  >
+    <div style="min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 4rem 1.5rem; text-align: center;">
+      <div style="max-width: 520px;">
+
+        <!-- Tool icon -->
+        <div style="width: 80px; height: 80px; border-radius: 20px; background: rgba(99,102,241,0.08); border: 1px dashed #334155; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem;">
+          {tool.icon}
+        </div>
+
+        <!-- Category badge -->
+        <span style={`display: inline-flex; align-items: center; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 9999px; background-color: ${tool.categoryColor}18; color: ${tool.categoryColor}; border: 1px solid ${tool.categoryColor}28; margin-bottom: 1rem;`}>
+          {tool.category}
+        </span>
+
+        <!-- 404 label -->
+        <p style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #475569; margin: 0 0 0.75rem;">
+          404 — Not Deployed
+        </p>
+
+        <!-- Heading -->
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: #F8FAFC; margin: 0 0 0.75rem; letter-spacing: -0.02em; line-height: 1.2;">
+          {tool.title}
+        </h1>
+
+        <!-- Info panel -->
+        <div style="background-color: #1E293B; border: 1px dashed #334155; border-radius: 0.75rem; padding: 1.5rem; margin: 1.5rem 0 2rem; text-align: left;">
+          <p style="color: #94A3B8; font-size: 0.9rem; margin: 0 0 0.875rem; line-height: 1.6;">
+            This tool hasn't been deployed to a subdomain yet. To enable it, add the following environment variable to your <code style="color: #818CF8; font-size: 0.85em;">.env</code> file:
+          </p>
+          <code style="display: block; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.15); color: #818CF8; padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.82rem; font-family: ui-monospace, 'Cascadia Code', monospace; word-break: break-all; line-height: 1.6;">
+            {envVarName}=https://your-subdomain.yourdomain.com
+          </code>
+        </div>
+
+        <!-- Actions -->
+        <div style="display: flex; gap: 0.875rem; justify-content: center; flex-wrap: wrap;">
+          <a href="/" class="btn-primary" style="padding: 0.65rem 1.25rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Browse All Tools
+          </a>
+          <a href="/contact" class="btn-secondary" style="padding: 0.65rem 1.25rem;">
+            Notify Me When Live
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </Layout>
+)}
