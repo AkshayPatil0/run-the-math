@@ -1,5 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { SITE } from "../config/site";
+
+const hasKey = SITE.web3formsKey.trim() !== "";
 ---
 
 <Layout
@@ -7,6 +10,7 @@ import Layout from "../layouts/Layout.astro";
   description="Get in touch with the Run The Math team. We'd love to hear your tool suggestions, feedback, or questions."
 >
   <div style="max-width: 700px; margin: 0 auto; padding: 4rem 1.5rem 6rem;">
+    <!-- Page header -->
     <div
       style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid #1E293B;"
     >
@@ -19,15 +23,81 @@ import Layout from "../layouts/Layout.astro";
       >
         Contact Us
       </h1>
-      <p style="color: #64748B; font-size: 1rem; margin: 0;">
-        Have a tool suggestion, found a bug, or just want to say hi? We'd love
-        to hear from you.
+      <p style="color: #64748B; font-size: 1rem; margin: 0; line-height: 1.6;">
+        Have a tool suggestion, found a bug, or just want to say hi? We
+        typically respond within 24–48 hours.
       </p>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
-      <!-- Contact Form -->
-      <div class="feature-card">
+    <!-- Setup notice (only shown when web3formsKey is not configured) -->
+    {
+      !hasKey && (
+        <div style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin-bottom: 2rem; display: flex; gap: 1rem; align-items: flex-start;">
+          <span style="font-size: 1.25rem; flex-shrink: 0; margin-top: 1px;">
+            ⚙️
+          </span>
+          <div>
+            <p style="color: #FCD34D; font-size: 0.875rem; font-weight: 600; margin: 0 0 0.35rem;">
+              Form not yet connected
+            </p>
+            <p style="color: #92400E; color: #D97706; font-size: 0.825rem; margin: 0; line-height: 1.6;">
+              Get a free access key at{" "}
+              <a
+                href="https://web3forms.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: #F59E0B; text-decoration: underline;"
+              >
+                web3forms.com
+              </a>
+              and paste it into{" "}
+              <code style="background: rgba(245,158,11,0.15); padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.8em;">
+                src/config/site.ts
+              </code>{" "}
+              →{" "}
+              <code style="background: rgba(245,158,11,0.15); padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.8em;">
+                web3formsKey
+              </code>
+              .
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Contact form card -->
+    <div class="feature-card" style="position: relative; overflow: hidden;">
+      <!-- Success screen (hidden until submission succeeds) -->
+      <div
+        id="success-screen"
+        style="display: none; text-align: center; padding: 2rem 1rem;"
+      >
+        <div
+          style="width: 64px; height: 64px; border-radius: 50%; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 1.75rem;"
+        >
+          ✓
+        </div>
+        <h2
+          style="font-size: 1.25rem; font-weight: 700; color: #F8FAFC; margin: 0 0 0.5rem;"
+        >
+          Message sent!
+        </h2>
+        <p
+          style="color: #64748B; font-size: 0.9rem; margin: 0 0 1.75rem; line-height: 1.6;"
+        >
+          Thanks for reaching out. We'll get back to you within 24–48 hours.
+        </p>
+        <button
+          id="send-another-btn"
+          class="btn-secondary"
+          style="padding: 0.6rem 1.25rem; font-size: 0.875rem;"
+        >
+          Send another message
+        </button>
+      </div>
+
+      <!-- The form itself -->
+      <div id="form-wrap">
         <h2
           style="font-size: 1.1rem; font-weight: 700; color: #F8FAFC; margin: 0 0 1.5rem; letter-spacing: -0.01em;"
         >
@@ -39,15 +109,35 @@ import Layout from "../layouts/Layout.astro";
           novalidate
           style="display: flex; flex-direction: column; gap: 1.25rem;"
         >
+          <!-- Honeypot anti-spam (hidden from real users, bots fill it) -->
+          <input
+            type="checkbox"
+            name="botcheck"
+            style="display: none;"
+            tabindex="-1"
+            aria-hidden="true"
+          />
+
+          <!-- Web3Forms access key (injected from config, never shown) -->
+          <input type="hidden" name="access_key" value={SITE.web3formsKey} />
+          <input
+            type="hidden"
+            name="subject"
+            value="New contact message — Run The Math"
+          />
+          <input
+            type="hidden"
+            name="from_name"
+            value="Run The Math Contact Form"
+          />
+
+          <!-- Name + Email row -->
           <div
-            style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"
             class="name-email-grid"
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"
           >
             <div>
-              <label
-                for="contact-name"
-                style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
-              >
+              <label for="contact-name" class="field-label">
                 Name <span style="color: #6366F1;">*</span>
               </label>
               <input
@@ -55,17 +145,22 @@ import Layout from "../layouts/Layout.astro";
                 id="contact-name"
                 name="name"
                 required
+                maxlength="120"
                 placeholder="Your name"
-                style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit;"
-                onfocus="this.style.borderColor='#6366F1'"
-                onblur="this.style.borderColor='#334155'"
+                autocomplete="name"
+                class="field-input"
+                aria-required="true"
               />
+              <p
+                class="field-error"
+                id="name-error"
+                role="alert"
+                aria-live="polite"
+              >
+              </p>
             </div>
             <div>
-              <label
-                for="contact-email"
-                style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
-              >
+              <label for="contact-email" class="field-label">
                 Email <span style="color: #6366F1;">*</span>
               </label>
               <input
@@ -73,41 +168,41 @@ import Layout from "../layouts/Layout.astro";
                 id="contact-email"
                 name="email"
                 required
+                maxlength="254"
                 placeholder="you@example.com"
-                style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit;"
-                onfocus="this.style.borderColor='#6366F1'"
-                onblur="this.style.borderColor='#334155'"
+                autocomplete="email"
+                class="field-input"
+                aria-required="true"
               />
+              <p
+                class="field-error"
+                id="email-error"
+                role="alert"
+                aria-live="polite"
+              >
+              </p>
             </div>
           </div>
 
+          <!-- Topic -->
           <div>
-            <label
-              for="contact-subject"
-              style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
-            >
-              Subject
-            </label>
+            <label for="contact-topic" class="field-label">Topic</label>
             <select
-              id="contact-subject"
-              name="subject"
-              style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit; cursor: pointer;"
-              onfocus="this.style.borderColor='#6366F1'"
-              onblur="this.style.borderColor='#334155'"
+              id="contact-topic"
+              name="topic"
+              class="field-input field-select"
             >
-              <option value="general">General Question</option>
-              <option value="bug">Bug Report</option>
-              <option value="feature">Tool Suggestion</option>
-              <option value="business">Business Inquiry</option>
-              <option value="other">Other</option>
+              <option value="General Question">General Question</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="Tool Suggestion">Tool Suggestion</option>
+              <option value="Business Inquiry">Business Inquiry</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
+          <!-- Message -->
           <div>
-            <label
-              for="contact-message"
-              style="display: block; font-size: 0.825rem; font-weight: 600; color: #94A3B8; margin-bottom: 0.5rem;"
-            >
+            <label for="contact-message" class="field-label">
               Message <span style="color: #6366F1;">*</span>
             </label>
             <textarea
@@ -115,12 +210,31 @@ import Layout from "../layouts/Layout.astro";
               name="message"
               required
               rows="5"
+              maxlength="3000"
               placeholder="Tell us what's on your mind…"
-              style="width: 100%; background-color: #0F172A; border: 1px solid #334155; color: #F8FAFC; padding: 0.65rem 0.875rem; border-radius: 0.5rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; font-family: inherit; resize: vertical; line-height: 1.6;"
-              onfocus="this.style.borderColor='#6366F1'"
-              onblur="this.style.borderColor='#334155'"></textarea>
+              class="field-input"
+              style="resize: vertical; line-height: 1.6; min-height: 120px;"
+              aria-required="true"></textarea>
+            <div
+              style="display: flex; justify-content: space-between; margin-top: 0.35rem;"
+            >
+              <p
+                class="field-error"
+                id="message-error"
+                role="alert"
+                aria-live="polite"
+              >
+              </p>
+              <p
+                id="char-count"
+                style="font-size: 0.75rem; color: #475569; margin: 0; text-align: right; flex-shrink: 0;"
+              >
+                0 / 3000
+              </p>
+            </div>
           </div>
 
+          <!-- Footer row -->
           <div
             style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;"
           >
@@ -129,12 +243,14 @@ import Layout from "../layouts/Layout.astro";
             </p>
             <button
               type="submit"
-              class="btn-primary"
               id="submit-btn"
-              style="padding: 0.65rem 1.5rem;"
+              class="btn-primary"
+              style="padding: 0.65rem 1.5rem; min-width: 148px; justify-content: center;"
+              aria-label="Send message"
             >
-              Send Message
+              <span id="btn-text">Send Message</span>
               <svg
+                id="btn-icon"
                 width="15"
                 height="15"
                 viewBox="0 0 24 24"
@@ -143,17 +259,36 @@ import Layout from "../layouts/Layout.astro";
                 stroke-width="2.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                aria-hidden="true"
               >
                 <line x1="22" y1="2" x2="11" y2="13"></line><polygon
                   points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
+              <!-- Spinner (hidden by default) -->
+              <svg
+                id="btn-spinner"
+                style="display: none; animation: spin 0.8s linear infinite;"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+              </svg>
             </button>
           </div>
 
-          <!-- Success/Error State -->
+          <!-- Inline error banner (network/server errors) -->
           <div
-            id="form-status"
-            style="display: none; padding: 0.875rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500;"
+            id="form-error"
+            role="alert"
+            aria-live="assertive"
+            style="display: none; padding: 0.875rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: #FCA5A5;"
           >
           </div>
         </form>
@@ -162,57 +297,290 @@ import Layout from "../layouts/Layout.astro";
   </div>
 </Layout>
 
-<script>
-  const form = document.getElementById("contact-form") as HTMLFormElement;
-  const statusEl = document.getElementById("form-status");
-  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+<script define:vars={{ hasKey, web3formsKey: SITE.web3formsKey }}>
+  // ─── Element refs ───────────────────────────────────────────
+  const form = /** @type {HTMLFormElement}   */ (
+    document.getElementById("contact-form")
+  );
+  const submitBtn = /** @type {HTMLButtonElement} */ (
+    document.getElementById("submit-btn")
+  );
+  const btnText = document.getElementById("btn-text");
+  const btnIcon = document.getElementById("btn-icon");
+  const btnSpinner = document.getElementById("btn-spinner");
+  const formError = document.getElementById("form-error");
+  const formWrap = document.getElementById("form-wrap");
+  const successScr = document.getElementById("success-screen");
+  const sendAgain = document.getElementById("send-another-btn");
+  const charCount = document.getElementById("char-count");
+  const msgField = /** @type {HTMLTextAreaElement} */ (
+    document.getElementById("contact-message")
+  );
 
-  form?.addEventListener("submit", (e) => {
+  // ─── Character counter ──────────────────────────────────────
+  msgField?.addEventListener("input", () => {
+    const len = msgField.value.length;
+    if (charCount) {
+      charCount.textContent = `${len} / 3000`;
+      charCount.style.color = len > 2700 ? "#F87171" : "#475569";
+    }
+  });
+
+  // ─── Field focus styles ─────────────────────────────────────
+  document.querySelectorAll(".field-input").forEach((el) => {
+    el.addEventListener("focus", () => {
+      /** @type {HTMLElement} */ (el).style.borderColor = "#6366F1";
+      /** @type {HTMLElement} */ (el).style.boxShadow =
+        "0 0 0 3px rgba(99,102,241,0.12)";
+    });
+    el.addEventListener("blur", () => {
+      /** @type {HTMLElement} */ (el).style.borderColor = "#334155";
+      /** @type {HTMLElement} */ (el).style.boxShadow = "none";
+    });
+  });
+
+  // ─── Inline validation helpers ──────────────────────────────
+  function setError(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = msg ? "block" : "none";
+    const input = document.getElementById(id.replace("-error", ""));
+    if (input) input.style.borderColor = msg ? "#EF4444" : "#334155";
+  }
+
+  function validateEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function validateAll() {
+    let ok = true;
+    const name = document.getElementById("contact-name")?.value.trim() ?? "";
+    const email = document.getElementById("contact-email")?.value.trim() ?? "";
+    const message = msgField?.value.trim() ?? "";
+
+    if (!name) {
+      setError("name-error", "Name is required.");
+      ok = false;
+    } else {
+      setError("name-error", "");
+    }
+
+    if (!email) {
+      setError("email-error", "Email is required.");
+      ok = false;
+    } else if (!validateEmail(email)) {
+      setError("email-error", "Enter a valid email address.");
+      ok = false;
+    } else {
+      setError("email-error", "");
+    }
+
+    if (!message) {
+      setError("message-error", "Message is required.");
+      ok = false;
+    } else if (message.length < 10) {
+      setError("message-error", "Message is too short (min 10 characters).");
+      ok = false;
+    } else {
+      setError("message-error", "");
+    }
+
+    return ok;
+  }
+
+  // Live validation on blur
+  document.getElementById("contact-name")?.addEventListener("blur", () => {
+    const v = document.getElementById("contact-name")?.value.trim() ?? "";
+    setError("name-error", v ? "" : "Name is required.");
+  });
+  document.getElementById("contact-email")?.addEventListener("blur", () => {
+    const v = document.getElementById("contact-email")?.value.trim() ?? "";
+    if (!v) setError("email-error", "Email is required.");
+    else if (!validateEmail(v))
+      setError("email-error", "Enter a valid email address.");
+    else setError("email-error", "");
+  });
+  msgField?.addEventListener("blur", () => {
+    const v = msgField.value.trim();
+    if (!v) setError("message-error", "Message is required.");
+    else if (v.length < 10)
+      setError("message-error", "Message is too short (min 10 characters).");
+    else setError("message-error", "");
+  });
+
+  // ─── Loading state helpers ──────────────────────────────────
+  function setLoading(loading) {
+    submitBtn.disabled = loading;
+    if (loading) {
+      btnText.textContent = "Sending…";
+      btnIcon.style.display = "none";
+      btnSpinner.style.display = "inline-block";
+    } else {
+      btnText.textContent = "Send Message";
+      btnIcon.style.display = "inline-block";
+      btnSpinner.style.display = "none";
+    }
+  }
+
+  function showFormError(msg) {
+    formError.textContent = msg;
+    formError.style.display = "block";
+    formError.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function hideFormError() {
+    formError.style.display = "none";
+  }
+
+  // ─── "Send another" button ──────────────────────────────────
+  sendAgain?.addEventListener("click", () => {
+    successScr.style.display = "none";
+    formWrap.style.display = "block";
+    form.reset();
+    if (charCount) charCount.textContent = "0 / 3000";
+    document.querySelectorAll(".field-error").forEach((el) => {
+      el.textContent = "";
+      el.style.display = "none";
+    });
+    document.querySelectorAll(".field-input").forEach((el) => {
+      el.style.borderColor = "#334155";
+    });
+  });
+
+  // ─── Submit ─────────────────────────────────────────────────
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = (
-      document.getElementById("contact-name") as HTMLInputElement
-    )?.value.trim();
-    const email = (
-      document.getElementById("contact-email") as HTMLInputElement
-    )?.value.trim();
-    const message = (
-      document.getElementById("contact-message") as HTMLTextAreaElement
-    )?.value.trim();
+    hideFormError();
 
-    if (!name || !email || !message) {
-      if (statusEl) {
-        statusEl.style.display = "block";
-        statusEl.style.backgroundColor = "rgba(239,68,68,0.1)";
-        statusEl.style.border = "1px solid rgba(239,68,68,0.3)";
-        statusEl.style.color = "#FCA5A5";
-        statusEl.textContent = "Please fill in all required fields.";
-      }
+    if (!validateAll()) {
+      // Scroll to first error
+      const firstError = form.querySelector(
+        '.field-error:not([style*="display: none"])',
+      );
+      firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
-    // Simulate submission (replace with actual endpoint)
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Sending…";
+    // Guard: no key configured
+    if (!hasKey) {
+      showFormError(
+        "The contact form is not configured yet. Please email us directly using the links above.",
+      );
+      return;
+    }
 
-    setTimeout(() => {
-      if (statusEl) {
-        statusEl.style.display = "block";
-        statusEl.style.backgroundColor = "rgba(16,185,129,0.1)";
-        statusEl.style.border = "1px solid rgba(16,185,129,0.3)";
-        statusEl.style.color = "#6EE7B7";
-        statusEl.textContent =
-          "✓ Message sent! We'll get back to you within 24–48 hours.";
+    setLoading(true);
+
+    try {
+      const data = new FormData(form);
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: data,
+      });
+
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        // Show success screen
+        formWrap.style.display = "none";
+        successScr.style.display = "block";
+        successScr.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        // API returned an error message
+        showFormError(
+          json.message ??
+            "Something went wrong. Please try again or email us directly.",
+        );
+        setLoading(false);
       }
-      form.reset();
-      submitBtn.disabled = false;
-      submitBtn.innerHTML =
-        'Send Message <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
-    }, 1200);
+    } catch {
+      showFormError(
+        "Network error — please check your connection and try again, or email us directly.",
+      );
+      setLoading(false);
+    }
   });
 </script>
 
 <style>
-  @media (max-width: 480px) {
+  /* ── Field base styles ─────────────────────────────── */
+  .field-label {
+    display: block;
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+  }
+
+  .field-input {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    color: #f8fafc;
+    padding: 0.65rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    outline: none;
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+    font-family: inherit;
+  }
+
+  .field-input::placeholder {
+    color: #475569;
+  }
+
+  .field-error {
+    display: none;
+    font-size: 0.775rem;
+    color: #f87171;
+    margin: 0.35rem 0 0;
+    line-height: 1.4;
+  }
+
+  /* ── Contact shortcut cards ────────────────────────── */
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-decoration: none;
+    transition:
+      border-color 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .contact-card:hover {
+    border-color: #6366f1;
+    transform: translateY(-1px);
+  }
+
+  /* ── Spinner animation ─────────────────────────────── */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ── Select arrow ──────────────────────────────────────────── */
+  .field-select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    padding-right: 2.5rem;
+  }
+
+  /* ── Responsive ────────────────────────────────────── */
+  @media (max-width: 500px) {
     .name-email-grid {
       grid-template-columns: 1fr !important;
     }
